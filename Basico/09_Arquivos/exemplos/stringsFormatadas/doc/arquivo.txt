@@ -1,0 +1,18 @@
+Nome: Victor Arnaud
+Idade: 22
+Endereço: Brasília, Aguas Claras, Q 1902 Bl G Apt 206
+Cpf: 011.293.845-25
+1° Numero: (61) 9283-4945
+2° Numero: (76) 2935-3945
+
+Nome: Jean Guilherme
+Idade: 24
+Endereço: Brasília, Asa Norte, Rua 2934 Quadra 99
+Cpf: 011.293.584-29
+1° Numero: (61) 2934-5964
+
+Nome: Kaio Cesar
+Idade: 25
+Endereço: Goiania, Rua aguarina, Quadra 1003 Bl T apt 293
+Cpf: 029.394.873-28
+

@@ -1,0 +1,3 @@
+Nome: Gustavo
+Idade: 32
+Altura: 1.66
