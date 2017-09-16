@@ -107,11 +107,11 @@ void close_connection(int socket) {
 }
 
 
-void receive_message(int *socket_descriptor, char *buffer) {
+void receive_message(int *descriptor, char *buffer) {
   int string_len;  // Armazena o tamanho da string de buffer
 
   // Receber a mensagem do servidor.
-  if((string_len = recv(*socket_descriptor, buffer, MSG_LEN, 0)) > 0) {
+  if((string_len = recv(*descriptor, buffer, MSG_LEN, 0)) > 0) {
     // Insere o valor nulo no final e tira a quebra de linha
     buffer[string_len - 1] = '\0';
     printf("Mensagem recebida: %s\n", buffer);

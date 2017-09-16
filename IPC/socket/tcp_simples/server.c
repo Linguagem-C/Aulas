@@ -13,7 +13,7 @@ int main() {
 
   accept_client_connection(&client_descriptor, &socket_descriptor);
 
-  // Enviar a mensagem de bem vindo para o cliente
+  /* // Enviar a mensagem de bem vindo para o cliente */
   strcpy(buffer, "Bem vindo ao servidor!\n\0");
   send(client_descriptor, buffer, strlen(buffer), 0);
 
@@ -27,8 +27,8 @@ int main() {
       buffer[string_len - 1] = '\0';
       printf("Mensagem recebida: %s\n", buffer);
       /* // Encerrar a conexão com o cliente */
-      /* close_connection(client_descriptor); */
-      /* break; */
+      close(client_descriptor);
+      break;
     }
   }
 
