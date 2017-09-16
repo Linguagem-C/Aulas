@@ -15,72 +15,72 @@
 #define FALSE  0
 #define PORTA 2000
 #define NUMBER_OF_CONNECTION 1
-#define MSG_LEN 4096
+#define MSG_LEN 2048
 
 // Placa de rede do servidor remoto (CLIENTE)
-struct sockaddr_in client;
+struct sockaddr_in client_host;
 // Armazena o tamanho da placa de rede do cliente
-int len = sizeof(client);
+int len = sizeof(client_host);
 
 // Placa de rede do servidor local - 127.0.0.1 ou localhost (SERVIDOR)
-struct sockaddr_in server;
+struct sockaddr_in server_host;
 
 
 int create_socket_tcp() {
-  int descriptor;  // Usado para escrever e ler dados no socket
+  int socket_descriptor;  // Usado para escrever e ler dados no socket
 
   // Cria a comunicação (endpoint) via protocolo IPv4 da camada de redes (dominio)
   // e protocolo TCP da camada de transporte (tipo)
-  descriptor = socket(AF_INET, SOCK_STREAM, 0);
+  socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
 
   // Caso ocorra algum erro
-  if (descriptor == ERROR) {
+  if (socket_descriptor == ERROR) {
     perror("socket");
     exit(1);
   } else {
     printf("Socket criado com sucesso!\n");
   }
 
-  return descriptor;
+  return socket_descriptor;
 }
 
 
-void configure_tcp_server(int *descriptor) {
+void configure_tcp_server(int *socket_descriptor) {
   // Pega o protocolo IPv4
-  server.sin_family = AF_INET;
+  server_host.sin_family = AF_INET;
   // Transforma a porta em números de rede
-  server.sin_port = htons(PORTA);
+  server_host.sin_port = htons(PORTA);
 
   // Zera a memória da estrutura de dados local
-  memset(server.sin_zero, 0x0, 8);
+  memset(server_host.sin_zero, 0x0, 8);
 
   // Atribui o endereço local ao socket descritor. Ou seja atribui um nome ao socket
-  if(bind(*descriptor, (struct sockaddr*) &server, sizeof(server)) == ERROR) {
+  if(bind(*socket_descriptor, (struct sockaddr*) &server_host, sizeof(server_host)) == ERROR) {
     perror("bind");
     exit(1);
   }
 
   // Colocar a porta em escuta para alguma conexão de um socket.
-  listen(*descriptor, NUMBER_OF_CONNECTION);
+  listen(*socket_descriptor, NUMBER_OF_CONNECTION);
 }
 
 
 void configure_tcp_client() {
   // Pega o protocolo IPv4
-  client.sin_family = AF_INET;
+  client_host.sin_family = AF_INET;
   // Transforma a porta em números de rede
-  client.sin_port = htons(PORTA);
+  client_host.sin_port = htons(PORTA);
   // Insere o ip do servidor, transforma o IP em IP de rede.
-  client.sin_addr.s_addr = inet_addr("127.0.0.1");
+  client_host.sin_addr.s_addr = inet_addr("127.0.0.1");
 
   // Zera a memória da estrutura de dados local
-  memset(client.sin_zero, 0x0, 8);
+  memset(client_host.sin_zero, 0x0, 8);
 }
 
 
-void connect_to_server(int *descriptor) {
+void connect_to_server(int *socket_descriptor) {
   // Se conecta com o servidor
-  if(connect(*descriptor, (struct sockaddr*) &client, len) == ERROR) {
+  if(connect(*socket_descriptor, (struct sockaddr*) &client_host, len) == ERROR) {
     perror("connect");
     exit(1);
   } else {
@@ -89,12 +89,31 @@ void connect_to_server(int *descriptor) {
 }
 
 
-void accept_client_connection(int *client, int *descriptor) {
+void accept_client_connection(int *socket_client, int *socket_descriptor) {
   // Receber e aceitar as conexões dos clientes
-  if((*client = accept(*descriptor, (struct sockaddr*) &client, &len)) == ERROR) {
+  if((*socket_client = accept(*socket_descriptor, (struct sockaddr*) &client_host, &len)) == ERROR) {
     perror("accept");
     exit(1);
   } else {
     printf("Conexão estabelecida com sucesso!\n");
+  }
+}
+
+
+void close_connection(int socket) {
+  // Encerrar a conexão
+  close(socket);
+  printf("Conexão encerrada!\n");
+}
+
+
+void receive_message(int *socket_descriptor, char *buffer) {
+  int string_len;  // Armazena o tamanho da string de buffer
+
+  // Receber a mensagem do servidor.
+  if((string_len = recv(*socket_descriptor, buffer, MSG_LEN, 0)) > 0) {
+    // Insere o valor nulo no final e tira a quebra de linha
+    buffer[string_len - 1] = '\0';
+    printf("Mensagem recebida: %s\n", buffer);
   }
 }
